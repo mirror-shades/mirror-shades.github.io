@@ -8,7 +8,7 @@
 </head>
 <body>
 <main>
-    <div>
+    <div class="dripper-container">
         <div class="dripper">
             <div class="dripper-bg">
             </div>
@@ -25,7 +25,7 @@
             </filter>
             </defs>
         </svg>
-      </div>
+    </div>
 
     <div class="content-wrapper">
         <div>
@@ -263,12 +263,17 @@
   }
 }
 
+.dripper-container {
+  width: 240px;
+  flex-shrink: 0;
+}
+
 .dripper {
   width: 90px;
   height: 90px;
   position: relative;
-  left: 150px;
-  top: -133px;
+  left: 100px;
+  top: -140px;
   transform: translateY(-50%);
   text-align: center;
   line-height: 120px;
@@ -353,7 +358,7 @@
         white-space: normal;
     }
 
-    .dripper {
+    .dripper-container {
         display: none;
     }
 
