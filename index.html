@@ -29,9 +29,15 @@
 
     <div class="content-wrapper">
         <div>
-            <h1>Mirror Shades</h1>
+            <h1>Mirror Shades</h1>            
+            <div class="contact-links">
+                <a href="mailto:mirror.shaders@gmail.com" target="_blank">Email</a>
+                <span class="separator">•</span>
+                <a href="https://github.com/mirror-shades/" target="_blank">GitHub</a>
+            </div>
             <br>
             <p>Software scribe. Ruminating on systems, compilers. Combining ancient wisdom with modern technology. Professional experience in Web3 and Automation.</p>
+
         </div>
 
         <ul>
@@ -107,7 +113,7 @@
         white-space: nowrap;
         border-right: 2px solid #f5fff6;
         width: 0;
-        animation: typing 1s steps(13, end) forwards, blink-caret 0.75s step-end infinite 2s;
+        animation: typing 1s steps(13, end) forwards, blink-caret 2s step-end infinite 1.1s;
     }
 
     ul {
@@ -223,6 +229,20 @@
     a:focus {
         outline: 2px solid #f5fff6;
         outline-offset: 2px;
+    }
+
+    .contact-links {
+        margin-top: 1rem;
+    }
+
+    .contact-links a {
+        margin-right: 0.5rem;
+    }
+
+    .separator {
+        color: #f5fff6;
+        opacity: 0.6;
+        margin: 0 0.5rem;
     }
 
     
