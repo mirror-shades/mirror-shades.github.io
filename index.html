@@ -113,7 +113,7 @@
         white-space: nowrap;
         border-right: 2px solid #f5fff6;
         width: 0;
-        animation: typing 1s steps(13, end) forwards, blink-caret 2s step-end infinite 1.1s;
+        animation: typing 1s steps(13, end) forwards, blink-caret 2s step-end 3.5 1.1s forwards;
     }
 
     ul {
@@ -208,8 +208,8 @@
     }
 
     @keyframes blink-caret {
-        from, to { border-color: transparent; }
-        50% { border-color: #f5fff6; }
+        0%, 60% { border-color: #f5fff6; }
+        30%, 100% { border-color: transparent; }
     }
 
     @keyframes gentleFade {
