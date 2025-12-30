@@ -68,6 +68,7 @@
     body {
         margin: 0;
         padding: 0;
+        background-color: #0c1311;
     }
 
     main {
@@ -325,6 +326,82 @@
 
 .drop2 {
   animation: drop 1.3s cubic-bezier(1,.19,.66,.12) .5s infinite;
+}
+
+@media (max-width: 768px) {
+    main {
+        padding: 1rem;
+        align-items: flex-start;
+        min-height: auto;
+    }
+
+    .content-wrapper {
+        max-width: 100%;
+        margin-top: 2rem;
+    }
+
+    .content-wrapper > div:first-child {
+        margin-bottom: 2rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+        text-align: left;
+        animation: none;
+        width: auto;
+        border-right: none;
+        white-space: normal;
+    }
+
+    .dripper {
+        display: none;
+    }
+
+    ul {
+        align-self: stretch;
+    }
+
+    li {
+        margin-bottom: 1.5rem;
+    }
+
+    p {
+        font-size: 0.9rem;
+    }
+
+    .indent {
+        padding-left: 1.5rem;
+        display: block;
+        margin-top: 0.5rem;
+    }
+
+    .tech-icon {
+        width: 1.2em;
+        height: 1.2em;
+        margin-right: 0.5em;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        padding: 0.5rem;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    p {
+        font-size: 0.85rem;
+    }
+
+    .indent {
+        padding-left: 1rem;
+    }
+
+    li {
+        margin-bottom: 1.25rem;
+    }
 }
 </style>
 </body>
