@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Brainfuck on WebAssembly — Doxa</title>
+	<style>
+		:root {
+			--bg: #cfcfcf;
+			--panel: #f4f4f4;
+			--ink: #1c1c1c;
+			--muted: #5a5a5a;
+			--line: #a9a9a9;
+			--accent: #2b6cb0;
+			--error: #a02020;
+			--ok: #1d7a3c;
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			background: var(--bg);
+			color: var(--ink);
+			font: 15px/1.5 "Segoe UI", system-ui, sans-serif;
+		}
+		main {
+			max-width: 980px;
+			margin: 0 auto;
+			padding: 24px 20px 64px;
+		}
+		header h1 { margin: 0 0 4px; font-size: 1.6rem; }
+		header p { margin: 0 0 20px; color: var(--muted); }
+		header a { color: var(--accent); }
+		.panels {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 16px;
+		}
+		@media (max-width: 720px) {
+			main { padding: 16px 14px 48px; }
+			.panels { grid-template-columns: 1fr; }
+			#source { height: 160px; }
+			#programInput { height: 88px; }
+			.controls { gap: 12px; }
+			.controls > button { flex: 1 1 auto; }
+			input[type="number"] { width: 72px; }
+		}
+		label { display: block; font-weight: 600; margin-bottom: 6px; }
+		.hint { font-weight: 400; color: var(--muted); }
+		textarea, pre {
+			width: 100%;
+			font: 13px/1.45 "Cascadia Mono", Consolas, "SFMono-Regular", monospace;
+			border: 1px solid var(--line);
+			border-radius: 6px;
+			background: var(--panel);
+			padding: 10px;
+			margin: 0;
+		}
+		textarea { resize: vertical; }
+		#source { height: 132px; }
+		#programInput { height: 72px; }
+		pre {
+			min-height: 132px;
+			white-space: pre-wrap;
+			overflow-wrap: anywhere;
+			overflow: auto;
+		}
+		.controls {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			flex-wrap: wrap;
+			margin: 18px 0;
+		}
+		button {
+			font: inherit;
+			font-weight: 600;
+			padding: 9px 22px;
+			border: 0;
+			border-radius: 6px;
+			background: var(--accent);
+			color: #fff;
+			cursor: pointer;
+			transition: background-color 0.15s ease, transform 0.15s ease;
+		}
+		button:not(:disabled):hover { background: #245a94; }
+		button:not(:disabled):active { transform: translateY(1px); }
+		button:disabled { opacity: 0.55; cursor: default; }
+		.samples {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin: 0 0 14px;
+		}
+		.samples button {
+			padding: 6px 14px;
+			font-size: 0.85rem;
+			background: var(--panel);
+			color: var(--ink);
+			border: 1px solid var(--line);
+		}
+		.samples button:not(:disabled):hover { background: #e4e4e4; }
+		.samples button[aria-pressed="true"] {
+			background: var(--accent);
+			border-color: var(--accent);
+			color: #fff;
+		}
+		.error-box {
+			margin: 0 0 16px;
+			padding: 10px 12px;
+			border: 1px solid var(--error);
+			border-left-width: 4px;
+			border-radius: 6px;
+			background: #fbeaea;
+			color: var(--error);
+			font: 13px/1.45 "Cascadia Mono", Consolas, "SFMono-Regular", monospace;
+			white-space: pre-wrap;
+			overflow-wrap: anywhere;
+		}
+		.controls label { margin: 0; font-weight: 400; }
+		input[type="number"] {
+			width: 84px;
+			font: inherit;
+			padding: 6px;
+			border: 1px solid var(--line);
+			border-radius: 6px;
+			background: var(--panel);
+		}
+		#status { color: var(--muted); }
+		#status.ok { color: var(--ok); }
+		#status.error { color: var(--error); }
+		h2 { font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 0 0 6px; }
+		.output h2 { margin-top: 4px; }
+		details.source-panel {
+			margin-top: 24px;
+			border: 1px solid var(--line);
+			border-radius: 6px;
+			background: var(--panel);
+			padding: 12px 14px;
+		}
+		details.source-panel summary { cursor: pointer; font-weight: 600; }
+		details.source-panel p { color: var(--muted); margin: 10px 0; }
+		details.source-panel pre { background: #1f2430; color: #e6e6e6; border-color: #1f2430; }
+		.back { display: inline-block; margin-bottom: 16px; color: var(--accent); text-decoration: none; }
+		@media (prefers-reduced-motion: reduce) {
+			*, *::before, *::after {
+				animation-duration: 0.001ms !important;
+				animation-iteration-count: 1 !important;
+				transition-duration: 0.001ms !important;
+			}
+		}
+	</style>
+</head>
+<body>
+	<main>
+		<a class="back" href="../">&larr; zig-web demos</a>
+		<header>
+			<h1>Brainfuck on WebAssembly</h1>
+			<p>
+				A Brainfuck interpreter written in <a href="https://github.com/mirror-shades/doxa">Doxa</a>,
+				compiled to <code>wasm32-wasi</code> and executed under a minimal WASI preview1
+				shim in a Web Worker. Edit the program and run it again — no page reload needed.
+			</p>
+		</header>
+
+		<div class="samples" role="group" aria-label="Sample programs">
+			<button type="button" data-sample="hello" aria-pressed="true">Hello World</button>
+			<button type="button" data-sample="echo" aria-pressed="false">Input echo</button>
+			<button type="button" data-sample="timeout" aria-pressed="false">Infinite loop (+[])</button>
+		</div>
+
+		<div class="panels">
+			<div>
+				<label for="source">Program</label>
+				<textarea id="source" spellcheck="false">++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.</textarea>
+			</div>
+			<div>
+				<label for="programInput">Program input <span class="hint">(each <code>,</code> consumes one line)</span></label>
+				<textarea id="programInput" spellcheck="false" placeholder="Optional stdin for the , command"></textarea>
+			</div>
+		</div>
+
+		<div class="controls">
+			<button id="run" type="button">Run</button>
+			<label for="timeout">Timeout <input id="timeout" type="number" min="50" step="50" value="5000"> ms</label>
+			<span id="status"></span>
+		</div>
+
+		<div id="error" class="error-box" role="alert" hidden></div>
+
+		<section class="output">
+			<h2>stdout</h2>
+			<pre id="stdout"></pre>
+			<div id="stderr-wrap" hidden>
+				<h2>stderr</h2>
+				<pre id="stderr"></pre>
+			</div>
+		</section>
+
+		<details class="source-panel">
+			<summary>bf.doxa source — compiled to WASM with Doxa</summary>
+			<p>The same program that produced <code>bf.wasm</code>, compiled with
+				<code>doxa compile --arch=wasm32 --os=wasi --opt-mode=small</code>.</p>
+			<pre><code id="doxaSource"></code></pre>
+		</details>
+	</main>
+
+	<script type="text/plain" id="bfDoxaSource">
+module std from @std()
+
+# a brainfuck interpreter implemented in doxa
+# mirror-shades
+
+function getInput() returns byte {
+    const input is std.io.input() as string else {
+        @print("Failed to get input: {input}")
+        return 0x00
+    }
+    const inputByte is @byte(input[0])
+    return inputByte
+}
+
+# `loops` is the current nesting depth and `loopSpot` holds the opening `[`
+# position for each depth. A jump-back lands on the `[` again, so a repeat visit
+# at the current depth's own slot is a no-op; every other `[` records its slot
+# (growing the stack only when a deeper level is opened for the first time).
+function startLoop(^loopSpot :: int[], ^loops :: int, ip :: int) {
+    if loops > 0 then {
+        if loopSpot[loops - 1] == ip then return
+    }
+    if @length(loopSpot) == loops then {
+        @push(loopSpot, ip)
+    } else {
+        loopSpot[loops] is ip
+    }
+    loops += 1
+}
+
+function endLoop(loopSpot :: int[], ^loops :: int, ^ip :: int, tape :: byte[], tp :: int) {
+    if loops >= 0 then {
+        if tape[tp] == 0 then {
+            loops -= 1
+        } else {
+            const loopPointer is loops - 1
+            ip is loopSpot[loopPointer]
+            # cancels the ip += 1 from the main loop
+            ip -= 1
+        }
+    }
+}
+
+function checkClosingBracket(scan :: string) returns tetra {
+    var pointer :: int
+    var openBrackets :: int
+    while pointer < @length(scan) do pointer += 1 {
+        if scan[pointer] == "[" then openBrackets += 1
+        if scan[pointer] == "]" then openBrackets -= 1
+        if openBrackets < 0 then return false
+    }
+    return(openBrackets == 0)
+}
+
+function interpret(scan :: string) returns byte[] {
+    const tapeSize is 30000
+    var tape :: byte[tapeSize]
+    var loops :: int
+    var loopSpot :: int[]
+    var tp :: int
+    var ip :: int
+    var output :: byte[]
+
+    const scanLength is @length(scan)
+
+    var closedBrackets :: tetra is checkClosingBracket(scan)
+    @assert(closedBrackets, "Unmatched brackets")
+
+    while(ip < scanLength) do ip += 1 {
+        match scan[ip] {
+            ">" then tp += 1,
+            "<" then tp -= 1,
+            "+" then tape[tp] += 0x01,
+            "-" then tape[tp] -= 0x01,
+            "." then @push(output, tape[tp]),
+            "," then tape[tp] is getInput(),
+            "[" then startLoop(^loopSpot, ^loops, ip),
+            "]" then endLoop(loopSpot, ^loops, ^ip, tape, tp),
+            else @print("Unrecognized Token: {scan[ip]}\n"),
+        }
+    }
+
+    return output
+}
+
+public entry function main() {
+    const argc is std.process.argc() as int else 0
+    if argc < 2 then @panic("usage: bf <source>")
+
+    const source is std.process.argv(1) as string else {
+        @panic("bad argv")
+        return
+    }
+
+    const output is interpret(source)
+    @print(@pack(output))
+}
+	</script>
+	<script src="bf.js"></script>
+</body>
+</html>
