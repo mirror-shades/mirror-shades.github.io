@@ -8,36 +8,20 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../styles/theme.css">
 	<style>
-		:root {
-			color-scheme: dark;
-			--bg: #0c1311;
-			--panel: #121b18;
-			--ink: #f5fff6;
-			--muted: #9bb0a7;
-			--line: #2a3a34;
-			--accent: #f5fff6;
-			--accent-ink: #0c1311;
-			--error: #ff6b6b;
-			--ok: #7ee0a1;
-		}
 		* { box-sizing: border-box; }
-		body {
-			margin: 0;
-			background: var(--bg);
-			color: var(--ink);
-			font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
-		}
+		body { font-size: 15px; line-height: 1.5; }
 		main {
-			max-width: 980px;
+			max-width: 700px;
 			margin: 0 auto;
-			padding: 24px 20px 64px;
+			padding: 2rem 1.5rem 4rem;
 		}
 		header h1 {
 			margin: 0 0 4px;
 			font-size: 1.6rem;
 			font-weight: 400;
-			font-family: "JetBrains Mono", monospace;
+			font-family: var(--font-mono);
 			letter-spacing: -0.02em;
 		}
 		header p { margin: 0 0 20px; color: var(--muted); }
@@ -54,7 +38,7 @@
 			gap: 16px;
 		}
 		@media (max-width: 720px) {
-			main { padding: 16px 14px 48px; }
+			main { padding: 1rem 1.25rem 3rem; }
 			.panels { grid-template-columns: 1fr; }
 			#source { height: 160px; }
 			#programInput { height: 88px; }
@@ -66,7 +50,7 @@
 		.hint { font-weight: 400; color: var(--muted); }
 		textarea, pre {
 			width: 100%;
-			font: 13px/1.45 "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+			font: 13px/1.45 var(--font-mono);
 			border: 1px solid var(--line);
 			border-radius: 6px;
 			background: var(--panel);
@@ -132,7 +116,7 @@
 			border-radius: 6px;
 			background: rgba(255, 107, 107, 0.08);
 			color: var(--error);
-			font: 13px/1.45 "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+			font: 13px/1.45 var(--font-mono);
 			white-space: pre-wrap;
 			overflow-wrap: anywhere;
 		}
@@ -151,7 +135,7 @@
 		h2 {
 			font-size: 0.95rem;
 			font-weight: 400;
-			font-family: "JetBrains Mono", monospace;
+			font-family: var(--font-mono);
 			text-transform: uppercase;
 			letter-spacing: 0.05em;
 			color: var(--muted);
@@ -168,19 +152,56 @@
 		details.source-panel summary { cursor: pointer; font-weight: 600; }
 		details.source-panel p { color: var(--muted); margin: 10px 0; }
 		details.source-panel pre { background: #0a100e; color: var(--ink); border-color: #0a100e; }
-		.back { display: inline-block; margin-bottom: 16px; color: var(--accent); text-decoration: none; }
-		@media (prefers-reduced-motion: reduce) {
-			*, *::before, *::after {
-				animation-duration: 0.001ms !important;
-				animation-iteration-count: 1 !important;
-				transition-duration: 0.001ms !important;
-			}
+		.sr-only {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border: 0;
 		}
+		.back {
+			--drip-distance: -96px;
+			display: inline-block;
+			position: relative;
+			width: 90px;
+			height: 90px;
+			margin: 0 0 96px;
+			text-decoration: none;
+			border: 1px solid var(--line);
+			border-radius: 4px;
+			outline-offset: 6px;
+			transition: transform 0.2s ease, border-color 0.2s ease;
+		}
+		.back:hover { transform: scale(1.06); border-color: var(--muted); }
+		.back:focus-visible { outline: 2px solid var(--ink); }
+		.back .dripper { position: absolute; inset: 0; }
+		.back .dripper-bg { border-radius: 4px; }
 	</style>
 </head>
 <body>
 	<main>
-		<a class="back" href="../">&larr; zig-web demos</a>
+		<a class="back" href="../" aria-label="Back to Mirror Shades">
+			<span class="dripper">
+				<span class="dripper-bg"></span>
+				<span class="drops">
+					<span class="drop1"></span>
+					<span class="drop2"></span>
+				</span>
+			</span>
+			<span class="sr-only">Back to Mirror Shades</span>
+		</a>
+		<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+			<defs>
+				<filter id="liquid">
+					<feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+					<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="liquid" />
+				</filter>
+			</defs>
+		</svg>
 		<header>
 			<h1>Brainfuck on WebAssembly</h1>
 			<p>

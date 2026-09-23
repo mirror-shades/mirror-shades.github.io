@@ -1,0 +1,98 @@
+:root {
+	color-scheme: dark;
+	--bg: #0c1311;
+	--panel: #121b18;
+	--ink: #f5fff6;
+	--muted: #9bb0a7;
+	--line: #2a3a34;
+	--accent: #f5fff6;
+	--accent-ink: #0c1311;
+	--error: #ff6b6b;
+	--ok: #7ee0a1;
+	--font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+	--font-mono: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+}
+
+body {
+	margin: 0;
+	background-color: var(--bg);
+	color: var(--ink);
+	font-family: var(--font-sans);
+}
+
+/* Dripper: a liquid-filled cube with a falling drop. */
+.dripper {
+	width: 90px;
+	height: 90px;
+	position: relative;
+}
+
+.dripper-bg {
+	position: absolute;
+	inset: 0;
+	background: var(--bg) url('../wave.png') repeat-x 0 100px/150px 300px;
+	z-index: 2;
+	animation: wave 1.7s ease-out forwards;
+}
+
+.drops {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	opacity: 0;
+	-webkit-filter: url('#liquid');
+	filter: url('#liquid');
+	animation: fade-in 0.3s linear 4s forwards;
+}
+
+.drop1,
+.drop2 {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	background-color: var(--ink);
+}
+
+.drop1 {
+	width: 90px;
+	height: 16px;
+	bottom: 2px;
+	border-radius: 0;
+}
+
+.drop2 {
+	width: 21px;
+	height: 24px;
+	border-radius: 50%;
+	animation: drop 1.5s cubic-bezier(1, 0.19, 0.66, 0.12) 8s infinite;
+}
+
+@keyframes fade-in {
+	0% { opacity: 0; }
+	100% { opacity: 1; }
+}
+
+@keyframes drop {
+	0% { bottom: 0; opacity: 1; }
+	80% { opacity: 1; }
+	100% { opacity: 1; bottom: var(--drip-distance, -200px); }
+}
+
+@keyframes wave {
+	0% { background-position: 0 160px; background-size: 170px 300px; }
+	100% { background-position: 500px -18px; background-size: 250px 150px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+	}
+	.drops { opacity: 1; }
+	.drop2 { display: none; }
+}
