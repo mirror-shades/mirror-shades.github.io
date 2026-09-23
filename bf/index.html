@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href="../shades.png">
-	<title>Brainfuck on WebAssembly — Doxa</title>
+	<title>Doxa - Brainfuck</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
@@ -17,21 +17,27 @@
 			margin: 0 auto;
 			padding: 2rem 1.5rem 4rem;
 		}
+		.title-row {
+			display: flex;
+			align-items: center;
+			gap: 1.25rem;
+			margin-bottom: 96px;
+		}
 		header h1 {
-			margin: 0 0 4px;
+			margin: 0;
 			font-size: 1.6rem;
 			font-weight: 400;
 			font-family: var(--font-mono);
 			letter-spacing: -0.02em;
 		}
 		header p { margin: 0 0 20px; color: var(--muted); }
-		header a {
+		header p a {
 			color: var(--accent);
 			text-decoration: underline;
 			text-underline-offset: 2px;
 			transition: opacity 0.3s ease;
 		}
-		header a:hover { opacity: 0.9; }
+		header p a:hover { opacity: 0.9; }
 		.panels {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
@@ -166,10 +172,11 @@
 		.back {
 			--drip-distance: -96px;
 			display: inline-block;
+			flex-shrink: 0;
 			position: relative;
 			width: 90px;
 			height: 90px;
-			margin: 0 0 96px;
+			margin: 0;
 			text-decoration: none;
 			border: 1px solid var(--line);
 			border-radius: 4px;
@@ -184,16 +191,6 @@
 </head>
 <body>
 	<main>
-		<a class="back" href="../" aria-label="Back to Mirror Shades">
-			<span class="dripper">
-				<span class="dripper-bg"></span>
-				<span class="drops">
-					<span class="drop1"></span>
-					<span class="drop2"></span>
-				</span>
-			</span>
-			<span class="sr-only">Back to Mirror Shades</span>
-		</a>
 		<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
 			<defs>
 				<filter id="liquid">
@@ -203,11 +200,21 @@
 			</defs>
 		</svg>
 		<header>
-			<h1>Brainfuck on WebAssembly</h1>
+			<div class="title-row">
+				<a class="back" href="../" aria-label="Back to Mirror Shades">
+					<span class="dripper">
+						<span class="dripper-bg"></span>
+						<span class="drops">
+							<span class="drop1"></span>
+							<span class="drop2"></span>
+						</span>
+					</span>
+					<span class="sr-only">Back to Mirror Shades</span>
+				</a>
+				<h1>Brainfuck in Doxa</h1>
+			</div>
 			<p>
-				A Brainfuck interpreter written in <a href="https://github.com/mirror-shades/doxa">Doxa</a>,
-				compiled to <code>wasm32-wasi</code> and executed under a minimal WASI preview1
-				shim in a Web Worker. Edit the program and run it again — no page reload needed.
+				A Brainfuck interpreter written in <a href="https://github.com/mirror-shades/doxa">Doxa</a> and compiled to WebAssembly.
 			</p>
 		</header>
 
@@ -246,9 +253,9 @@
 		</section>
 
 		<details class="source-panel">
-			<summary>bf.doxa source — compiled to WASM with Doxa</summary>
-			<p>The same program that produced <code>bf.wasm</code>, compiled with
-				<code>doxa compile --arch=wasm32 --os=wasi --opt-mode=small</code>.</p>
+			<summary>bf.doxa source code</summary>
+			<p>Compiled with
+				<code>doxa compile --arch=wasm32 --os=wasi --opt-mode=small</code> using Doxa 0.4.0</p>
 			<pre><code id="doxaSource"></code></pre>
 		</details>
 	</main>
@@ -267,8 +274,6 @@ function getInput() returns byte {
     return value
 }
 
-# Forward scan from an opening `[` to its matching `]`. Bracket balance is
-# validated up front, so a match always exists.
 function findClosingBracket(scan :: string, open :: int) returns int {
     var depth :: int
     var cursor :: int is open
@@ -282,11 +287,6 @@ function findClosingBracket(scan :: string, open :: int) returns int {
     return open
 }
 
-# `loops` is the current nesting depth and `loopSpot` holds the opening `[`
-# position for each depth. A jump-back lands on the `[` again, so a repeat visit
-# at the current depth's own slot is a no-op; every other `[` records its slot
-# (growing the stack only when a deeper level is opened for the first time).
-# A loop whose cell is zero is skipped by jumping straight to its closing `]`.
 function startLoop(scan :: string, tape :: byte[], tp :: int, ^loopSpot :: int[], ^loops :: int, ^ip :: int) {
     if tape[tp] == 0 then {
         ip is findClosingBracket(scan, ip)
