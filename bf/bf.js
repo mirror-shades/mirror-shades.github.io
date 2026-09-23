@@ -17,9 +17,18 @@
   const DEFAULT_TIMEOUT_MS = 5000;
 
   const SAMPLES = {
-    hello: '++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.',
-    echo: ',.',
-    timeout: '+[]',
+    hello: {
+      source: '++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.',
+      input: '',
+    },
+    echo: {
+      source: ',[.,]',
+      input: 'Hello, Brainfuck!',
+    },
+    shift: {
+      source: ',[+.,]',
+      input: 'abc',
+    },
   };
 
   let worker = null;
@@ -189,9 +198,10 @@
   }
 
   function selectSample(name) {
-    if (typeof SAMPLES[name] !== 'string') return;
-    sourceEl.value = SAMPLES[name];
-    inputEl.value = name === 'echo' ? 'Hello' : '';
+    const sample = SAMPLES[name];
+    if (sample === undefined) return;
+    sourceEl.value = sample.source;
+    inputEl.value = sample.input;
     clearError();
     clearPanes();
     for (const button of sampleButtons) {
