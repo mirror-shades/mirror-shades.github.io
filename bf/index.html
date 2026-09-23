@@ -151,6 +151,10 @@
 		#source {
 			white-space: pre-wrap;
 			overflow-wrap: break-word;
+			line-height: 1.7;
+			padding-left: 30px;
+			padding-right: 16px;
+			text-indent: -18px;
 		}
 		pre {
 			white-space: pre-wrap;
@@ -158,8 +162,9 @@
 			overflow: auto;
 		}
 		details.source-panel pre {
-			white-space: pre-wrap;
-			overflow-wrap: break-word;
+			white-space: pre;
+			overflow-wrap: normal;
+			tab-size: 4;
 		}
 		#stdout { height: 190px; }
 		#stderr-wrap { border-top: 1px solid var(--line); }
@@ -241,7 +246,24 @@
 		}
 		details.source-panel summary { cursor: pointer; font-weight: 600; }
 		details.source-panel p { color: var(--muted); margin: 10px 0; }
-		details.source-panel pre { background: #0a100e; color: var(--ink); border-color: #0a100e; }
+		details.source-panel p code {
+			font: 0.85em/1.4 var(--font-mono);
+			background: var(--bg);
+			border: 1px solid var(--line);
+			border-radius: 4px;
+			padding: 0.12em 0.4em;
+			color: var(--ok);
+			overflow-wrap: anywhere;
+		}
+		details.source-panel pre {
+			margin: 12px 0 0;
+			background: #0a100e;
+			color: var(--ink);
+			border: 1px solid var(--line);
+			border-radius: 6px;
+			box-shadow: inset 0 1px 0 rgba(245, 255, 246, 0.03);
+		}
+		details.source-panel pre code { color: inherit; }
 		.sr-only {
 			position: absolute;
 			width: 1px;
