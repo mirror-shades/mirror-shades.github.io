@@ -225,18 +225,11 @@
     .demo-link {
         display: inline-flex;
         align-items: center;
-        gap: 0.4em;
+        gap: 0.3em;
         vertical-align: middle;
         margin-left: 0.25em;
-        padding: 0.18em 0.7em 0.22em;
-        border-radius: 999px;
-        background-color: var(--ink);
-        color: var(--bg);
-        font-family: var(--font-mono);
-        font-size: 0.78em;
-        line-height: 1.4;
-        letter-spacing: 0.01em;
-        transition: background-color 0.25s ease;
+        color: var(--muted);
+        transition: color 0.25s ease;
     }
 
     .demo-link::after {
@@ -245,7 +238,7 @@
 
     .demo-link:hover {
         opacity: 1;
-        background-color: #c9d8ce;
+        color: var(--ink);
     }
 
     .demo-arrow {
