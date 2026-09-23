@@ -86,13 +86,15 @@
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			width: 40px;
-			height: 40px;
 			padding: 0;
-			border-radius: 50%;
+			background: transparent;
+			border-radius: 0;
 			flex: 0 0 auto;
 		}
-		#run svg { width: 15px; height: 15px; margin-left: 2px; fill: currentColor; }
+		#run svg { width: 34px; height: 34px; fill: var(--accent); }
+		#run:not(:disabled):hover { background: transparent; }
+		#run:not(:disabled):hover svg { fill: #d8e6dc; }
+		#run:not(:disabled):active { transform: none; }
 		button {
 			font: inherit;
 			font-weight: 600;
@@ -149,8 +151,6 @@
 		#source {
 			white-space: pre-wrap;
 			overflow-wrap: break-word;
-			padding-left: 2.25rem;
-			text-indent: -1.5rem;
 		}
 		pre {
 			white-space: pre-wrap;
