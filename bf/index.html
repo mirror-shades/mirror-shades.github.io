@@ -25,7 +25,8 @@
 		}
 		header h1 {
 			margin: 0;
-			font-size: 1.6rem;
+			min-width: 0;
+			font-size: var(--title-size);
 			font-weight: 400;
 			font-family: var(--font-mono);
 			letter-spacing: -0.02em;
@@ -38,68 +39,26 @@
 			transition: opacity 0.3s ease;
 		}
 		header p a:hover { opacity: 0.9; }
-		.panels {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			gap: 16px;
-		}
-		@media (max-width: 720px) {
-			main { padding: 1rem 1.25rem 3rem; }
-			.panels { grid-template-columns: 1fr; }
-			#source { height: 160px; }
-			#programInput { height: 88px; }
-			.controls { gap: 12px; }
-			.controls > button { flex: 1 1 auto; }
-			input[type="number"] { width: 72px; }
-		}
-		label { display: block; font-weight: 600; margin-bottom: 6px; }
-		.hint { font-weight: 400; color: var(--muted); }
-		textarea, pre {
-			width: 100%;
-			font: 13px/1.45 var(--font-mono);
+		.ide {
 			border: 1px solid var(--line);
 			border-radius: 6px;
+			overflow: hidden;
 			background: var(--panel);
-			color: var(--ink);
-			padding: 10px;
-			margin: 0;
 		}
-		::placeholder { color: var(--muted); }
-		textarea { resize: vertical; }
-		#source { height: 132px; }
-		#programInput { height: 72px; }
-		pre {
-			min-height: 132px;
-			white-space: pre-wrap;
-			overflow-wrap: anywhere;
-			overflow: auto;
-		}
-		.controls {
+		.ide-toolbar {
 			display: flex;
 			align-items: center;
-			gap: 16px;
+			justify-content: space-between;
 			flex-wrap: wrap;
-			margin: 18px 0;
+			gap: 12px 16px;
+			padding: 10px 12px;
+			border-bottom: 1px solid var(--line);
 		}
-		button {
-			font: inherit;
-			font-weight: 600;
-			padding: 9px 22px;
-			border: 0;
-			border-radius: 6px;
-			background: var(--accent);
-			color: var(--accent-ink);
-			cursor: pointer;
-			transition: background-color 0.15s ease, transform 0.15s ease;
-		}
-		button:not(:disabled):hover { background: #d8e6dc; }
-		button:not(:disabled):active { transform: translateY(1px); }
-		button:disabled { opacity: 0.55; cursor: default; }
 		.samples {
 			display: flex;
 			flex-wrap: wrap;
 			gap: 8px;
-			margin: 0 0 14px;
+			margin: 0;
 		}
 		.samples button {
 			padding: 6px 14px;
@@ -114,19 +73,89 @@
 			border-color: var(--accent);
 			color: var(--accent-ink);
 		}
-		.error-box {
-			margin: 0 0 16px;
-			padding: 10px 12px;
-			border: 1px solid var(--error);
-			border-left-width: 4px;
+		.controls {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			flex-wrap: wrap;
+			margin: 0;
+		}
+		.controls label { margin: 0; font-weight: 400; }
+		button {
+			font: inherit;
+			font-weight: 600;
+			padding: 9px 22px;
+			border: 0;
 			border-radius: 6px;
+			background: var(--accent);
+			color: var(--accent-ink);
+			cursor: pointer;
+			transition: background-color 0.15s ease, transform 0.15s ease;
+		}
+		button:not(:disabled):hover { background: #d8e6dc; }
+		button:not(:disabled):active { transform: translateY(1px); }
+		button:disabled { opacity: 0.55; cursor: default; }
+		.ide-panes {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 1px;
+			background: var(--line);
+		}
+		.pane {
+			display: flex;
+			flex-direction: column;
+			min-height: 0;
+			background: var(--panel);
+			transition: background-color 0.15s ease;
+		}
+		.pane:focus-within { background: #141f1b; }
+		.pane.output { grid-column: 1 / -1; }
+		.pane-title {
+			display: block;
+			margin: 0;
+			padding: 8px 12px;
+			border-bottom: 1px solid var(--line);
+			font: 400 0.75rem/1.2 var(--font-mono);
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+			color: var(--muted);
+		}
+		.hint { font-weight: 400; text-transform: none; letter-spacing: 0; }
+		textarea, pre {
+			width: 100%;
+			font: 13px/1.45 var(--font-mono);
+			border: 0;
+			border-radius: 0;
+			background: transparent;
+			color: var(--ink);
+			padding: 10px 12px;
+			margin: 0;
+		}
+		::placeholder { color: var(--muted); }
+		textarea { resize: none; overflow: auto; }
+		.pane textarea { height: 200px; }
+		pre {
+			white-space: pre-wrap;
+			overflow-wrap: anywhere;
+			overflow: auto;
+		}
+		#stdout { height: 190px; }
+		#stderr-wrap { border-top: 1px solid var(--line); }
+		#stderr { height: 140px; }
+		.error-box {
+			margin: 0;
+			padding: 10px 12px;
+			border-bottom: 1px solid var(--line);
+			border-left: 4px solid var(--error);
 			background: rgba(255, 107, 107, 0.08);
 			color: var(--error);
 			font: 13px/1.45 var(--font-mono);
 			white-space: pre-wrap;
 			overflow-wrap: anywhere;
 		}
-		.controls label { margin: 0; font-weight: 400; }
+		#status { color: var(--muted); }
+		#status.ok { color: var(--ok); }
+		#status.error { color: var(--error); }
 		input[type="number"] {
 			width: 84px;
 			font: inherit;
@@ -134,20 +163,19 @@
 			border: 1px solid var(--line);
 			border-radius: 6px;
 			background: var(--panel);
+			color: var(--ink);
 		}
-		#status { color: var(--muted); }
-		#status.ok { color: var(--ok); }
-		#status.error { color: var(--error); }
-		h2 {
-			font-size: 0.95rem;
-			font-weight: 400;
-			font-family: var(--font-mono);
-			text-transform: uppercase;
-			letter-spacing: 0.05em;
-			color: var(--muted);
-			margin: 0 0 6px;
+		@media (max-width: 720px) {
+			main { padding: 1rem 1.25rem 3rem; }
+			.ide-panes { grid-template-columns: 1fr; }
+			.pane textarea { height: 150px; }
+			#programInput { height: 88px; }
+			#stdout { height: 150px; }
+			.ide-toolbar { gap: 10px; }
+			.controls { gap: 12px; }
+			.controls > button { flex: 1 1 auto; }
+			input[type="number"] { width: 72px; }
 		}
-		.output h2 { margin-top: 4px; }
 		details.source-panel {
 			margin-top: 24px;
 			border: 1px solid var(--line);
@@ -178,15 +206,12 @@
 			height: 90px;
 			margin: 0;
 			text-decoration: none;
-			border: 1px solid var(--line);
-			border-radius: 4px;
 			outline-offset: 6px;
-			transition: transform 0.2s ease, border-color 0.2s ease;
+			transition: transform 0.2s ease;
 		}
-		.back:hover { transform: scale(1.06); border-color: var(--muted); }
+		.back:hover { transform: scale(1.06); }
 		.back:focus-visible { outline: 2px solid var(--ink); }
 		.back .dripper { position: absolute; inset: 0; }
-		.back .dripper-bg { border-radius: 4px; }
 	</style>
 </head>
 <body>
@@ -218,39 +243,41 @@
 			</p>
 		</header>
 
-		<div class="samples" role="group" aria-label="Sample programs">
-			<button type="button" data-sample="hello" aria-pressed="true">Hello World</button>
-			<button type="button" data-sample="echo" aria-pressed="false">Echo input</button>
-			<button type="button" data-sample="shift" aria-pressed="false">Caesar shift</button>
-		</div>
-
-		<div class="panels">
-			<div>
-				<label for="source">Program</label>
-				<textarea id="source" spellcheck="false">++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.</textarea>
+		<div class="ide">
+			<div class="ide-toolbar">
+				<div class="samples" role="group" aria-label="Sample programs">
+					<button type="button" data-sample="hello" aria-pressed="true">Hello World</button>
+					<button type="button" data-sample="echo" aria-pressed="false">Echo input</button>
+					<button type="button" data-sample="shift" aria-pressed="false">Caesar shift</button>
+				</div>
+				<div class="controls">
+					<button id="run" type="button">Run</button>
+					<label for="timeout">Timeout <input id="timeout" type="number" min="50" step="50" value="5000"> ms</label>
+					<span id="status"></span>
+				</div>
 			</div>
-			<div>
-				<label for="programInput">Program input <span class="hint">(each <code>,</code> reads one byte)</span></label>
-				<textarea id="programInput" spellcheck="false" placeholder="Optional stdin for the , command"></textarea>
+
+			<div id="error" class="error-box" role="alert" hidden></div>
+
+			<div class="ide-panes">
+				<section class="pane">
+					<label class="pane-title" for="source">Program</label>
+					<textarea id="source" spellcheck="false">++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.</textarea>
+				</section>
+				<section class="pane">
+					<label class="pane-title" for="programInput">Input <span class="hint">(each <code>,</code> reads one byte)</span></label>
+					<textarea id="programInput" spellcheck="false" placeholder="Optional stdin for the , command"></textarea>
+				</section>
+				<section class="pane output">
+					<h2 class="pane-title">stdout</h2>
+					<pre id="stdout"></pre>
+					<div id="stderr-wrap" hidden>
+						<h2 class="pane-title">stderr</h2>
+						<pre id="stderr"></pre>
+					</div>
+				</section>
 			</div>
 		</div>
-
-		<div class="controls">
-			<button id="run" type="button">Run</button>
-			<label for="timeout">Timeout <input id="timeout" type="number" min="50" step="50" value="5000"> ms</label>
-			<span id="status"></span>
-		</div>
-
-		<div id="error" class="error-box" role="alert" hidden></div>
-
-		<section class="output">
-			<h2>stdout</h2>
-			<pre id="stdout"></pre>
-			<div id="stderr-wrap" hidden>
-				<h2>stderr</h2>
-				<pre id="stderr"></pre>
-			</div>
-		</section>
 
 		<details class="source-panel">
 			<summary>bf.doxa source code</summary>
