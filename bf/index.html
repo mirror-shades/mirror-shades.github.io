@@ -82,6 +82,17 @@
 			margin: 0;
 		}
 		.controls label { margin: 0; font-weight: 400; }
+		#run {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 40px;
+			height: 40px;
+			padding: 0;
+			border-radius: 50%;
+			flex: 0 0 auto;
+		}
+		#run svg { width: 15px; height: 15px; margin-left: 2px; fill: currentColor; }
 		button {
 			font: inherit;
 			font-weight: 600;
@@ -164,10 +175,17 @@
 			white-space: pre-wrap;
 			overflow-wrap: anywhere;
 		}
-		#status {
-			padding: 8px 12px;
+		.ide-footer {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 6px 12px;
 			border-top: 1px solid var(--line);
-			min-height: 34px;
+		}
+		#status {
+			min-width: 0;
+			flex: 1 1 auto;
 			font: 400 0.75rem/1.2 var(--font-mono);
 			color: var(--muted);
 			white-space: nowrap;
@@ -176,6 +194,24 @@
 		}
 		#status.ok { color: var(--ok); }
 		#status.error { color: var(--error); }
+		.timeout {
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
+			flex: 0 0 auto;
+			font: 400 0.7rem/1.2 var(--font-mono);
+			color: var(--muted);
+			white-space: nowrap;
+		}
+		.timeout input[type="number"] {
+			width: 56px;
+			font: inherit;
+			padding: 2px 4px;
+			border: 1px solid var(--line);
+			border-radius: 4px;
+			background: var(--panel);
+			color: var(--ink);
+		}
 		input[type="number"] {
 			width: 84px;
 			font: inherit;
@@ -271,8 +307,9 @@
 					<button type="button" data-sample="shift" aria-pressed="false">Caesar shift</button>
 				</div>
 				<div class="controls">
-					<button id="run" type="button">Run</button>
-					<label for="timeout">Timeout <input id="timeout" type="number" min="50" step="50" value="5000"> ms</label>
+					<button id="run" type="button" aria-label="Run program">
+						<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 2.3v11.4a.8.8 0 0 0 1.22.68l9-5.7a.8.8 0 0 0 0-1.36l-9-5.7A.8.8 0 0 0 4.5 2.3z"/></svg>
+					</button>
 				</div>
 			</div>
 
@@ -297,7 +334,10 @@
 				</section>
 			</div>
 
-			<div id="status" role="status" aria-live="polite"></div>
+			<div class="ide-footer">
+				<div id="status" role="status" aria-live="polite"></div>
+				<label class="timeout" for="timeout">timeout <input id="timeout" type="number" min="50" step="50" value="5000"> ms</label>
+			</div>
 		</div>
 
 		<details class="source-panel">
