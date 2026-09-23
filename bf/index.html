@@ -15,23 +15,24 @@
 		main {
 			max-width: 700px;
 			margin: 0 auto;
-			padding: 2rem 1.5rem 4rem;
+			padding: 4rem 1.5rem 4rem;
 		}
-		.title-row {
+		.intro {
 			display: flex;
 			align-items: center;
 			gap: 1.25rem;
-			margin-bottom: 96px;
+			margin-bottom: 64px;
 		}
+		.intro-text { min-width: 0; }
 		header h1 {
-			margin: 0;
+			margin: 0 0 0.5rem;
 			min-width: 0;
 			font-size: var(--title-size, 2.5rem);
 			font-weight: 400;
 			font-family: var(--font-mono);
 			letter-spacing: -0.02em;
 		}
-		header p { margin: 0 0 20px; color: var(--muted); }
+		header p { margin: 0; color: var(--muted); }
 		header p a {
 			color: var(--accent);
 			text-decoration: underline;
@@ -166,7 +167,7 @@
 			color: var(--ink);
 		}
 		@media (max-width: 720px) {
-			main { padding: 1rem 1.25rem 3rem; }
+			main { padding: 2rem 1.25rem 3rem; }
 			.ide-panes { grid-template-columns: 1fr; }
 			.pane textarea { height: 150px; }
 			#programInput { height: 88px; }
@@ -198,7 +199,7 @@
 			border: 0;
 		}
 		.back {
-			--drip-distance: -96px;
+			--drip-distance: -48px;
 			display: inline-block;
 			flex-shrink: 0;
 			position: relative;
@@ -224,23 +225,23 @@
 				</filter>
 			</defs>
 		</svg>
-		<header>
-			<div class="title-row">
-				<a class="back" href="../" aria-label="Back to Mirror Shades">
-					<span class="dripper">
-						<span class="dripper-bg"></span>
-						<span class="drops">
-							<span class="drop1"></span>
-							<span class="drop2"></span>
-						</span>
+		<header class="intro">
+			<a class="back" href="../" aria-label="Back to Mirror Shades">
+				<span class="dripper">
+					<span class="dripper-bg"></span>
+					<span class="drops">
+						<span class="drop1"></span>
+						<span class="drop2"></span>
 					</span>
-					<span class="sr-only">Back to Mirror Shades</span>
-				</a>
+				</span>
+				<span class="sr-only">Back to Mirror Shades</span>
+			</a>
+			<div class="intro-text">
 				<h1>Brainfuck in Doxa</h1>
+				<p>
+					A Brainfuck interpreter written in <a href="https://github.com/mirror-shades/doxa">Doxa</a> and compiled to WebAssembly.
+				</p>
 			</div>
-			<p>
-				A Brainfuck interpreter written in <a href="https://github.com/mirror-shades/doxa">Doxa</a> and compiled to WebAssembly.
-			</p>
 		</header>
 
 		<div class="ide">
