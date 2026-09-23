@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href="../shades.png">
-	<title>Doxa - Brainfuck</title>
+	<title>Doxa - Brainf*ck</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
@@ -135,10 +135,18 @@
 		::placeholder { color: var(--muted); }
 		textarea { resize: none; overflow: auto; }
 		.pane textarea { height: 200px; }
+		#source {
+			white-space: pre;
+			overflow-x: auto;
+		}
 		pre {
 			white-space: pre-wrap;
 			overflow-wrap: anywhere;
 			overflow: auto;
+		}
+		details.source-panel pre {
+			white-space: pre;
+			overflow-wrap: normal;
 		}
 		#stdout { height: 190px; }
 		#stderr-wrap { border-top: 1px solid var(--line); }
@@ -246,9 +254,9 @@
 				<span class="sr-only">Back to Mirror Shades</span>
 			</a>
 			<div class="intro-text">
-				<h1>Brainfuck in Doxa</h1>
+				<h1>Brainf*ck in Doxa</h1>
 				<p>
-					A Brainfuck interpreter written in <a href="https://github.com/mirror-shades/doxa">Doxa</a> and compiled to WebAssembly.
+					A Brainf*ck interpreter written in <a href="https://github.com/mirror-shades/doxa">Doxa</a> and compiled to WebAssembly.
 				</p>
 			</div>
 		</header>
@@ -271,7 +279,7 @@
 			<div class="ide-panes">
 				<section class="pane">
 					<label class="pane-title" for="source">Program</label>
-					<textarea id="source" spellcheck="false">++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.</textarea>
+					<textarea id="source" spellcheck="false" wrap="off">++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.</textarea>
 				</section>
 				<section class="pane">
 					<label class="pane-title" for="programInput">Input</label>
@@ -301,7 +309,7 @@
 	<script type="text/plain" id="bfDoxaSource">
 module std from @std()
 
-# a brainfuck interpreter implemented in doxa
+# a brainf*ck interpreter implemented in doxa
 # mirror-shades
 
 function getInput() returns byte {
