@@ -250,19 +250,16 @@ function createWasi(module, source, stdinBytes) {
   };
 }
 
-async function run(payload) {
-  const startedAt = performance.now();
-  const source = typeof payload.source === 'string' ? payload.source : '';
-  const input = new TextEncoder().encode(
-    typeof payload.input === 'string' ? payload.input : ''
-  );
-
-  const module = await loadModule();
+// One full interpreter run: a fresh instance so stdin and the tape start clean.
+// Only _start() is timed, so module loading and instantiation do not inflate the
+// result.
+async function executeOnce(module, source, input) {
   const wasi = createWasi(module, source, input);
   const instance = await WebAssembly.instantiate(module, wasi.importObject);
   wasi.attach(instance.exports.memory);
 
   let exitCode = 0;
+  const startedAt = performance.now();
   try {
     instance.exports._start();
   } catch (error) {
@@ -272,16 +269,56 @@ async function run(payload) {
       throw error;
     }
   }
+  const durationMs = performance.now() - startedAt;
 
-  const stdout = wasi.stdout();
-  const stderr = wasi.stderr();
+  return { exitCode, stdout: wasi.stdout(), stderr: wasi.stderr(), durationMs };
+}
+
+// Clock resolution (often 100µs, sometimes 1ms) makes single tiny runs report 0
+// or 1 ms. When a successful run is very short we repeat it and average, which
+// recovers sub-resolution precision. The work budget is kept small so it stays
+// well under the smallest configurable timeout (50 ms).
+const BENCH_TARGET_MS = 20;
+const BENCH_TRIGGER_MS = 5;
+const BENCH_MAX_ITERATIONS = 1000;
+const BENCH_MAX_ELAPSED_MS = 100;
+
+async function run(payload) {
+  const source = typeof payload.source === 'string' ? payload.source : '';
+  const input = new TextEncoder().encode(
+    typeof payload.input === 'string' ? payload.input : ''
+  );
+
+  const module = await loadModule();
+  const first = await executeOnce(module, source, input);
+
+  let durationMs = first.durationMs;
+  let iterations = 1;
+
+  if (first.exitCode === 0 && first.durationMs < BENCH_TRIGGER_MS) {
+    let total = first.durationMs;
+    const benchStart = performance.now();
+    while (
+      iterations < BENCH_MAX_ITERATIONS &&
+      total < BENCH_TARGET_MS &&
+      performance.now() - benchStart < BENCH_MAX_ELAPSED_MS
+    ) {
+      const next = await executeOnce(module, source, input);
+      if (next.exitCode !== 0) break;
+      total += next.durationMs;
+      iterations += 1;
+    }
+    durationMs = total / iterations;
+  }
+
   self.postMessage({
     type: 'result',
-    stdout,
-    stderr,
-    exitCode,
-    durationMs: performance.now() - startedAt,
-  }, [stdout.buffer, stderr.buffer]);
+    stdout: first.stdout,
+    stderr: first.stderr,
+    exitCode: first.exitCode,
+    durationMs,
+    iterations,
+  }, [first.stdout.buffer, first.stderr.buffer]);
 }
 
 let running = false;

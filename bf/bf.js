@@ -45,6 +45,12 @@
     statusEl.className = kind || '';
   }
 
+  function formatDuration(ms) {
+    if (ms > 0 && ms < 0.01) return '<0.01 ms';
+    if (ms < 10) return (Math.round(ms * 100) / 100) + ' ms';
+    return Math.round(ms) + ' ms';
+  }
+
   function showError(message) {
     errorEl.textContent = message;
     errorEl.hidden = false;
@@ -134,12 +140,16 @@
         renderBytes(stderrEl, message.stderr);
         stderrWrapEl.hidden = false;
       }
-      const ms = Math.round(message.durationMs);
+      const ms = message.durationMs;
       if (message.exitCode === 0) {
         if (message.stdout.length === 0 && message.stderr.length === 0) {
           stdoutEl.textContent = '(no output)';
         }
-        setStatus('Finished in ' + ms + ' ms', 'ok');
+        let statusText = 'Finished in ' + formatDuration(ms);
+        if (message.iterations > 1) {
+          statusText += ' (avg of ' + message.iterations + ' runs)';
+        }
+        setStatus(statusText, 'ok');
       } else {
         if (message.stdout.length === 0 && message.stderr.length === 0) {
           stdoutEl.textContent = 'Program exited with code ' + message.exitCode + '.';

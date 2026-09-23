@@ -154,7 +154,16 @@
 			white-space: pre-wrap;
 			overflow-wrap: anywhere;
 		}
-		#status { color: var(--muted); }
+		#status {
+			padding: 8px 12px;
+			border-top: 1px solid var(--line);
+			min-height: 34px;
+			font: 400 0.75rem/1.2 var(--font-mono);
+			color: var(--muted);
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
 		#status.ok { color: var(--ok); }
 		#status.error { color: var(--error); }
 		input[type="number"] {
@@ -254,7 +263,6 @@
 				<div class="controls">
 					<button id="run" type="button">Run</button>
 					<label for="timeout">Timeout <input id="timeout" type="number" min="50" step="50" value="5000"> ms</label>
-					<span id="status"></span>
 				</div>
 			</div>
 
@@ -266,8 +274,8 @@
 					<textarea id="source" spellcheck="false">++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.</textarea>
 				</section>
 				<section class="pane">
-					<label class="pane-title" for="programInput">Input <span class="hint">(each <code>,</code> reads one byte)</span></label>
-					<textarea id="programInput" spellcheck="false" placeholder="Optional stdin for the , command"></textarea>
+					<label class="pane-title" for="programInput">Input</label>
+					<textarea id="programInput" spellcheck="false" placeholder="(each , reads one byte)"></textarea>
 				</section>
 				<section class="pane output">
 					<h2 class="pane-title">stdout</h2>
@@ -278,6 +286,8 @@
 					</div>
 				</section>
 			</div>
+
+			<div id="status" role="status" aria-live="polite"></div>
 		</div>
 
 		<details class="source-panel">
