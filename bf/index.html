@@ -136,8 +136,10 @@
 		textarea { resize: none; overflow: auto; }
 		.pane textarea { height: 200px; }
 		#source {
-			white-space: pre;
-			overflow-x: auto;
+			white-space: pre-wrap;
+			overflow-wrap: break-word;
+			padding-left: 2.25rem;
+			text-indent: -1.5rem;
 		}
 		pre {
 			white-space: pre-wrap;
@@ -145,8 +147,8 @@
 			overflow: auto;
 		}
 		details.source-panel pre {
-			white-space: pre;
-			overflow-wrap: normal;
+			white-space: pre-wrap;
+			overflow-wrap: break-word;
 		}
 		#stdout { height: 190px; }
 		#stderr-wrap { border-top: 1px solid var(--line); }
@@ -279,7 +281,7 @@
 			<div class="ide-panes">
 				<section class="pane">
 					<label class="pane-title" for="source">Program</label>
-					<textarea id="source" spellcheck="false" wrap="off">++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.</textarea>
+					<textarea id="source" spellcheck="false">++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.</textarea>
 				</section>
 				<section class="pane">
 					<label class="pane-title" for="programInput">Input</label>
